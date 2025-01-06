@@ -1,6 +1,7 @@
 package jm.task.core.jdbc.util;
 
 
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import jm.task.core.jdbc.model.User;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -20,8 +21,6 @@ public class Util {
     private static final String Password = "root";
     private static SessionFactory sessionFactory;
 
-    //    private Connection connection;
-
     public Util() {
     }
 
@@ -31,10 +30,8 @@ public class Util {
             String driver = "com.mysql.cj.jdbc.Driver";
             Class.forName(driver);
             connection = DriverManager.getConnection(HOST, USERNAME, Password);
-//            System.out.println("Есть коннект");
         } catch (SQLException | ClassNotFoundException e) {
             System.out.println("Не удалось подключиться");
-
         }
         return connection;
     }
@@ -43,8 +40,6 @@ public class Util {
         if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration();
-
-
                 Properties settings = new Properties();
                 settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
                 settings.put(Environment.URL, "jdbc:mysql://localhost:3306/mydbcata?useSSL=false");
@@ -56,7 +51,7 @@ public class Util {
 
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
 
-                settings.put(Environment.HBM2DDL_AUTO, "create-drop");
+                settings.put(Environment.HBM2DDL_AUTO, "update");
 
                 configuration.setProperties(settings);
 
@@ -66,7 +61,7 @@ public class Util {
                         .applySettings(configuration.getProperties()).build();
 
                 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-            } catch (Exception e) {
+            } catch (HibernateException e) {
                 e.printStackTrace();
             }
         }

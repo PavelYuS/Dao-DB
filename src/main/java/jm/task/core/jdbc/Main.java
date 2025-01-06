@@ -1,46 +1,26 @@
 package jm.task.core.jdbc;
 
-import jm.task.core.jdbc.dao.UserDao;
-import jm.task.core.jdbc.dao.UserDaoHibernateImpl;
-import jm.task.core.jdbc.dao.UserDaoJDBCImpl;
-import jm.task.core.jdbc.util.Util;
+import jm.task.core.jdbc.service.UserService;
+import jm.task.core.jdbc.service.UserServiceImpl;
 
 public class Main {
     public static void main(String[] args) {
 
-        UserDao userDao = new UserDaoJDBCImpl();
-        UserDao userDaoHiber = new UserDaoHibernateImpl();
+        UserService userDaoHibernate = new UserServiceImpl();
 
-//        userDao.createUsersTable();
+        userDaoHibernate.createUsersTable();
 
-        userDaoHiber.createUsersTable();
+        userDaoHibernate.saveUser("Donatello", "Betto Bardi", (byte) 20);
+        userDaoHibernate.saveUser("Michelangelo", "Buonarroti Simoni", (byte) 25);
+        userDaoHibernate.saveUser("Leonardo", "Piero da Vinci", (byte) 31);
+        userDaoHibernate.saveUser("Raphael", "Sanzio", (byte) 38);
 
+        System.out.println(userDaoHibernate.getAllUsers());
 
-//        userDao.saveUser("Donatello", "Betto Bardi", (byte) 20);
-//        userDao.saveUser("Michelangelo", "Buonarroti Simoni", (byte) 25);
-//        userDao.saveUser("Leonardo", "Piero da Vinci", (byte) 31);
-//        userDao.saveUser("Raphael", "Sanzio", (byte) 38);
+        userDaoHibernate.removeUserById(2);
 
-
-        userDaoHiber.saveUser("Donatello", "Betto Bardi", (byte) 20);
-        userDaoHiber.saveUser("Michelangelo", "Buonarroti Simoni", (byte) 25);
-        userDaoHiber.saveUser("Leonardo", "Piero da Vinci", (byte) 31);
-        userDaoHiber.saveUser("Raphael", "Sanzio", (byte) 38);
-
-//        System.out.println(userDao.getAllUsers());
-
-        System.out.println(userDaoHiber.getAllUsers());
-
-//        userDao.removeUserById(2);
-
-        userDaoHiber.removeUserById(2);
-
-//        userDao.cleanUsersTable();
-//        userDao.dropUsersTable();
-
-        userDaoHiber.cleanUsersTable();
-        userDaoHiber.dropUsersTable();
+        userDaoHibernate.cleanUsersTable();
+        userDaoHibernate.dropUsersTable();
     }
-
 }
 

@@ -9,14 +9,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class UserDaoJDBCImpl implements UserDao {
 
+    private static final Logger logger = LogManager.getLogger(UserDaoJDBCImpl.class);
 
     public UserDaoJDBCImpl() {
-
     }
-
 
     public void createUsersTable() {
 
@@ -24,9 +25,9 @@ public class UserDaoJDBCImpl implements UserDao {
 
         try (Statement statement = Util.getConnection().createStatement()) {
             statement.execute(createTableSql);
-            System.out.println("Таблица создана");
+            logger.info("Таблица 'users' успешно создана.");
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Ошибка при создании таблицы 'users'.", e);
         }
     }
 
@@ -36,11 +37,10 @@ public class UserDaoJDBCImpl implements UserDao {
 
         try (Statement statement = Util.getConnection().createStatement()) {
             statement.execute(dropTableSql);
-            System.out.println("Таблица удалена");
+            logger.info("Таблица 'users' успешно удалена.");
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Ошибка при удалении таблицы 'users'.", e);
         }
-
     }
 
     public void saveUser(String name, String lastName, byte age) {
@@ -50,50 +50,46 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, lastName);
             preparedStatement.setByte(3, age);
-
             preparedStatement.executeUpdate();
-            System.out.println("User с именем -  " + name + " добавлен в базу данных");
+            logger.info("Ползователь успешно добавлен в базу данных.");
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Ошибка при добавлении пользователя в базу данных", e);
         }
     }
 
     public void removeUserById(long id) {
+
         String removeSQL = "DELETE FROM mydbcata.users WHERE id = ?";
 
         try (PreparedStatement preparedStatement = Util.getConnection().prepareStatement(removeSQL)) {
             preparedStatement.setLong(1, id);
-
-
             preparedStatement.executeUpdate();
-            System.out.println("Пользователь удалён");
+            logger.info("Ползователь успешно удален из базы данных.");
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Ошибка при удалении пользователя из базы данных", e);
         }
     }
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
+
         String allUsers = "SELECT * FROM mydbcata.users";
 
         try (Statement statement = Util.getConnection().createStatement()) {
-
             ResultSet resultSet = statement.executeQuery(allUsers);
             System.out.println("Получены все пользователи");
-
             while (resultSet.next()) {
                 User user = new User();
                 user.setId(resultSet.getLong("id"));
                 user.setName(resultSet.getString("name"));
                 user.setLastName(resultSet.getString("lastname"));
                 user.setAge(resultSet.getByte("age"));
-
                 users.add(user);
+                logger.info("Получен список пользователей.");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Ошибка при получении списка пользователей", e);
         }
-
         return users;
     }
 
@@ -102,11 +98,9 @@ public class UserDaoJDBCImpl implements UserDao {
 
         try (Statement statement = Util.getConnection().createStatement()) {
             statement.executeUpdate(clnUsersTable);
-
-            System.out.println("Все пользователи из таблицы удалены");
+            logger.info("Все данные из таблицы были удалены.");
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Ошибка при очистке таблицы пользователей", e);
         }
-
     }
 }

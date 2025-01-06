@@ -4,12 +4,12 @@ import jm.task.core.jdbc.dao.UserDao;
 import jm.task.core.jdbc.dao.UserDaoHibernateImpl;
 import jm.task.core.jdbc.dao.UserDaoJDBCImpl;
 import jm.task.core.jdbc.model.User;
+import org.w3c.dom.ls.LSOutput;
 
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
-    UserDao userDaoHibernate = new UserDaoHibernateImpl();
-//    UserDaoJDBCImpl userDaoJDBC = new UserDaoJDBCImpl();
+    private final UserDao userDaoHibernate = new UserDaoHibernateImpl();
 
     public void createUsersTable() {
         userDaoHibernate.createUsersTable();
